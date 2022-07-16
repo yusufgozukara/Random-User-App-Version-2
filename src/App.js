@@ -1,8 +1,6 @@
 import React, { useState, useEffect} from "react";
 import mailSvg from "./assets/mail.svg";
-// import manSvg from "./assets/man.svg";
 import womanSvg from "./assets/woman.svg";
-// import manAgeSvg from "./assets/growing-up-man.svg";
 import womanAgeSvg from "./assets/growing-up-woman.svg";
 import mapSvg from "./assets/map.svg";
 import phoneSvg from "./assets/phone.svg";
@@ -12,13 +10,13 @@ import Footer from "./components/footer/Footer";
 import axios from "axios";
 
 const url = "https://randomuser.me/api/";
-// const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
 
 function App() {
 
   const [loading,setLoading] = useState(true);
   const [user, setUser] = useState([])
   const [hover,setHover] =useState([])
+  const [userList, setUserList] = useState([]);
   
   const getData = async () => {
 
@@ -39,9 +37,23 @@ function App() {
     getData() 
   }, [])
 
+  const handleClick = ()=>{
+    const duplicityCheck = userList.filter((item)=>item.email === user[0].email);
+    !duplicityCheck.length &&
+    setUserList([...userList,{
+      name:user[0].name.first + ' ' + user[0].name.last,
+      email:user[0].email,
+      phone:user[0].cell,
+      age:user[0].dob.age
+    }
+  ])
+    console.log(userList);
+  }
+
   if(loading){
     return <h1>Loading...</h1>
   }
+
   
   return (
     <main>
@@ -77,7 +89,7 @@ function App() {
             <button className="btn" type="button" onClick={() => getData()}>
               new user
             </button>
-            <button className="btn" type="button">
+            <button className="btn" type="button" onClick={handleClick}>
               add user
             </button>
           </div>
@@ -92,7 +104,16 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <tr className="body-tr"></tr>
+            {userList && (userList?.map((item)=>{
+        return(
+          <tr>
+            <td>{item.name}</td>
+            <td>{item.email}</td>
+            <td>{item.phone}</td>
+            <td>{item.age}</td>
+          </tr>
+        )
+      }))}
             </tbody>
           </table>
         </div>
