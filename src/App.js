@@ -1,19 +1,65 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import mailSvg from "./assets/mail.svg";
-import manSvg from "./assets/man.svg";
+// import manSvg from "./assets/man.svg";
 import womanSvg from "./assets/woman.svg";
-import manAgeSvg from "./assets/growing-up-man.svg";
+// import manAgeSvg from "./assets/growing-up-man.svg";
 import womanAgeSvg from "./assets/growing-up-woman.svg";
 import mapSvg from "./assets/map.svg";
 import phoneSvg from "./assets/phone.svg";
 import padlockSvg from "./assets/padlock.svg";
 import cwSvg from "./assets/cw.svg";
 import Footer from "./components/footer/Footer";
+import axios from "axios";
 
 const url = "https://randomuser.me/api/";
-const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
+// const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
 
 function App() {
+
+  const [loading,setLoading] = useState(true);
+  const [user, setUser] = useState([])
+  const [hover,setHover] =useState([])
+  
+  const getData = async () => {
+
+    try {
+      const {data} = await axios.get(url);
+    setUser(data.results[0]);
+    setLoading(false);
+  
+
+    const {
+      email,
+      name: {title, first, last},
+      dob:{age}, 
+      street:{name, number},
+      cell,
+      login:{password},
+      picture:{medium}
+     } = user;
+
+
+  } catch (error) {
+      console.log(error); 
+    }
+  };
+
+  useEffect(() => {
+    getData() 
+  }, [])
+
+  if(loading){
+    return <h1>Loading...</h1>
+  }
+
+  // const handleValue = (e) => {
+  //   if (e.target.classList.contains("icon")) {
+  //     const newValue = e.target.dataset.label;
+  //     setTitle(newValue);
+  //     setValue(person[newValue]);
+  //   }
+  // };
+  
   return (
     <main>
       <div className="block bcg-orange">
@@ -21,11 +67,11 @@ function App() {
       </div>
       <div className="block">
         <div className="container">
-          <img src={defaultImage} alt="random user" className="user-img" />
-          <p className="user-title">My ... is</p>
-          <p className="user-value"></p>
+          <img src={user.medium} alt="random user" className="user-img"  />
+          <p className="user-title">My {hover[0]} is</p>
+          <p className="user-value">{hover[1]}</p>
           <div className="values-list">
-            <button className="icon" data-label="name">
+            <button className="icon" data-label="name"  >
               <img src={womanSvg} alt="user" id="iconImg" />
             </button>
             <button className="icon" data-label="email">
@@ -45,7 +91,7 @@ function App() {
             </button>
           </div>
           <div className="btn-group">
-            <button className="btn" type="button">
+            <button className="btn" type="button" onClick={() => getData()}>
               new user
             </button>
             <button className="btn" type="button">
