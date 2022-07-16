@@ -24,19 +24,10 @@ function App() {
 
     try {
       const {data} = await axios.get(url);
-    setUser(data.results[0]);
+    setUser(data.results);
     setLoading(false);
-  
-
-    const {
-      email,
-      name: {title, first, last},
-      dob:{age}, 
-      street:{name, number},
-      cell,
-      login:{password},
-      picture:{medium}
-     } = user;
+    setHover(['name', data.results[0].name.title+ ' ' +data.results[0].name.first+ ' ' + data.results[0].name.last])
+    console.log(user);
 
 
   } catch (error) {
@@ -51,14 +42,6 @@ function App() {
   if(loading){
     return <h1>Loading...</h1>
   }
-
-  // const handleValue = (e) => {
-  //   if (e.target.classList.contains("icon")) {
-  //     const newValue = e.target.dataset.label;
-  //     setTitle(newValue);
-  //     setValue(person[newValue]);
-  //   }
-  // };
   
   return (
     <main>
@@ -67,26 +50,26 @@ function App() {
       </div>
       <div className="block">
         <div className="container">
-          <img src={user.medium} alt="random user" className="user-img"  />
+          <img src={user[0].picture.large} alt="random user" className="user-img"  />
           <p className="user-title">My {hover[0]} is</p>
           <p className="user-value">{hover[1]}</p>
           <div className="values-list">
-            <button className="icon" data-label="name"  >
+            <button className="icon" data-label="name" onMouseOver={() => setHover(['name',user[0].name.title+ ' ' + user[0].name.first + ' ' + user[0].name.last])} >
               <img src={womanSvg} alt="user" id="iconImg" />
             </button>
-            <button className="icon" data-label="email">
+            <button className="icon" data-label="email" onMouseOver={()=>setHover(['email', user[0].email])}>
               <img src={mailSvg} alt="mail" id="iconImg" />
             </button>
-            <button className="icon" data-label="age">
+            <button className="icon" data-label="age" onMouseOver={()=>setHover(['age', user[0].dob.age])}>
               <img src={womanAgeSvg} alt="age" id="iconImg" />
             </button>
-            <button className="icon" data-label="street">
+            <button className="icon" data-label="street" onMouseOver={()=>setHover(['street', user[0].location.street.name])}>
               <img src={mapSvg} alt="map" id="iconImg" />
             </button>
-            <button className="icon" data-label="phone">
+            <button className="icon" data-label="phone" onMouseOver={()=>setHover(['phone number', user[0].cell])}>
               <img src={phoneSvg} alt="phone" id="iconImg" />
             </button>
-            <button className="icon" data-label="password">
+            <button className="icon" data-label="password" onMouseOver={()=>setHover(['password', user[0].login.password])}>
               <img src={padlockSvg} alt="lock" id="iconImg" />
             </button>
           </div>
